@@ -1,0 +1,11 @@
+﻿bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vscode/
+*.log
+*.db
+*.sqlite
+*.idea/
+*.DS_Store

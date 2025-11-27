@@ -1,0 +1,28 @@
+﻿{
+  "info": {
+    "name": "MeshAlignerToolkit Extended API",
+    "_postman_id": "d9f0a5e1-5678-4321-90ab-cdef98765432",
+    "description": "Extended CRUD API with random mesh generation and tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Random Mesh",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{ "name": "RandomMesh_{{randomInt}}", "vertices": [{{randomVertices}}], "triangles": [{{randomTriangles}}] }"
+        },
+        "url": { "raw": "http://localhost:5000/api/mesh" }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": { "exec": [ "pm.variables.set('randomInt', Math.floor(Math.random()*1000));" ] }
+        }
+      ]
+    }
+  ]
+}
