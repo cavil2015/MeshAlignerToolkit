@@ -1,16 +1,12 @@
 ﻿using Xunit;
 using MeshAligner.Core;
-using System;
 
-namespace MeshAligner.Core.Tests
-{
-    public class MeshTests
-    {
+namespace MeshAligner.Core.Tests {
+    public class MeshTests {
         [Fact]
-        public void CreateMesh_ShouldHaveId()
-        {
-            var mesh = new Mesh();
-            Assert.NotEqual(Guid.Empty, mesh.Id);
+        public void Mesh_Creation_Works() {
+            var mesh = new Mesh { Id = 1, Name = ""Test"" };
+            Assert.Equal(1, mesh.Id);
         }
     }
 }

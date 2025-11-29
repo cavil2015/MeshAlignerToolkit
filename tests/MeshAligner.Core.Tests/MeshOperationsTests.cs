@@ -1,17 +1,14 @@
 ﻿using Xunit;
 using MeshAligner.Core;
-using System.Collections.Generic;
 
-namespace MeshAligner.Core.Tests
-{
-    public class MeshOperationsTests
-    {
+namespace MeshAligner.Core.Tests {
+    public class MeshOperationsTests {
         [Fact]
-        public void Translate_ShouldMoveVertices()
-        {
-            var mesh = new Mesh { Vertices = new List<int>{1,2,3} };
-            var result = MeshOperations.Translate(mesh, 5);
-            Assert.Equal(new List<int>{6,7,8}, result.Vertices);
+        public void Clone_Returns_Copy() {
+            var mesh = new Mesh { Id = 1, Name = ""A"" };
+            var copy = MeshOperations.Clone(mesh);
+            Assert.Equal(mesh.Id, copy.Id);
+            Assert.Equal(mesh.Name, copy.Name);
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿name: .NET Core CI with PostgreSQL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: MeshAlignerTestDb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd 'pg_isready -U postgres'
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore src/MeshAligner.Api/MeshAligner.Api.csproj
+
+    - name: Build
+      run: dotnet build src/MeshAligner.Api/MeshAligner.Api.csproj --configuration Release --no-restore
+
+    - name: Wait for PostgreSQL
+      run: |
+        until pg_isready -h localhost -p 5432 -U postgres; do
+          echo "Waiting for postgres..."
+          sleep 2
+        done
+
+    - name: Run migrations
+      run: |
+        dotnet ef database update --project src/MeshAligner.Infrastructure/MeshAligner.Infrastructure.csproj --context MeshDbContext
+
+    - name: Run tests
+      env:
+        ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=MeshAlignerTestDb;Username=postgres;Password=postgres"
+      run: dotnet test --no-build --verbosity normal
